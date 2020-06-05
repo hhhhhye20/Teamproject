@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+	<head>
+		<title>HOME</title>
+
+<style type="text/css">
+
+	body{color:#084B8A;}
+
+	.button {
+		border:2px solid black;
+		background: linear-gradient(to bottom, rgba(59,103,158,1) 0%,rgba(43,136,217,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%);
+		padding:10px 55px;
+		margin:10px;
+		font-size:20px;
+		border-radius:30px;
+	}
+
+	.table1 {
+		border-top:2px solid black; 
+		background:#D8D8D8;
+		padding:5px;
+		margin-top:5px;
+		margin-left:47px;
+		margin-right:47px;
+		padding-left:28px;
+		font-size:15px;
+	}
+
+	.table2 {
+		border-top:2px solid black;
+		background-color:#F7F8E0;
+                margin-top:5px;
+                margin-left:47px;
+                margin-right:47px;
+                padding-left:28px;
+                font-size:15px;
+	}
+
+</style>
+
+	</head>
+	<body>
+		<div>
+			<div align="right" style="display:block;width:1000px;margin:0 auto;position:relative;">
+				<form method="POST" action="/home/textInput">
+	
+				<span style=padding:20px;font-size:20px;">
+				Enter the URL
+				</span>
+	
+				<input name="URL" type="text"style="width:800px;height:50px;font-size:30px;"><br>
+					
+				<button type="submit" name="process" value="Process"
+					 class="button">결과 출력 </button>
+				<input type="button" name="report" value="Report"
+					class="button">
+				
+				</form>	<hr style=margin-bottom:30px;>
+			</div>
+
+			<div>
+				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
+					<input type = "file" name = "file" />
+					<input type = "submit"/>
+				</form>
+			</div>
+			
+			<div>
+				
+			<div align="left" style="display:block;width:1000px;margin:0 auto;position:relative;">
+				<span style=padding-left:47px;font-size:20px;>
+					Open Source Project Analysis List
+				</span><br>
+				{% for html in urlList %}
+					<table width="880" class="table1">
+					<!--	<tr style="padding-left:10px;padding-rihgt:10px;">
+							<td width="100">shiro</td>
+							<td width="400">URL: http://www.infoq.com/articles/apache-shiro</td>
+							<td width="100">24534</td>
+							<td width="300">2019/2/28 13:11:45</td>
+						</tr> 
+						<tr>
+						<td colspan="4">security, Authentication, Authorization, container ...</td>
+						</tr> -->
+						{{ html }} </br>
+					</table>
+					{% endfor %}
+				
+			<!--	<table width="880" class="table2">
+                                       <tr style="padding-left:10px;padding-rihgt:10px;">
+                                                <td width="100">kafka</td>
+                                                <td width="400">URL: http://kafka.apache.org/</td>
+                                                <td width="100">24534</td>
+                                                <td width="300">2019/2/28 13:11:45</td>
+                                        </tr>
+                                        <tr>
+                                                <td colspan="4">Message, consumerm producer, relication, cluster, messaging...</td>
+					</tr> 
+			</table> -->
+		
+			</div>	
+		</div>
+	</body>
+</html>
