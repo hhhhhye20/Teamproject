@@ -3,6 +3,7 @@ import re
 import requests 
 from bs4 import BeautifulSoup 
 from flask import Flask, render_template, request
+from urllib.request import urlopen
 
 app = Flask(__name__)
 
@@ -18,33 +19,32 @@ def upload_file():
 		with open(f.filename,"r") as f:
 			for line in f:
 				url=line
-				res = requests.get(url) 
-				html = BeautifulSoup(res.content, "html.parser") 
-				html = html.find_all(class_='Box-row')
+				html = urlopen(url).read() 
+				html = BeautifulSoup(html, "html.parser") 
+				print(html)
+				html = html.find_all('p')
 				a=[]
 
 				for alist in html:
-					lists = alist.find(class_='h3 lh-condensed').text
+					lists = alist.text
 					a.append(lists)
 	
 
-				str1='/'.join(a)
-				strList=str1.split('/')
+				str1=' '.join(a)
+				strList=str1.split(' ')
 		
 				for i in range(len(strList)):
 					strList[i]=strList[i].strip()
 	
 				result=[]
-				result2=[]
-				for i in range(1,len(strList),2):
+			
+				for i in range(0,len(strList)):
 					print(strList[i])
 					result.append(strList[i])
-				for i in range(0,len(strList),2):
-					print(strList[i])
-					result2.append(strList[i])
+			
 			
 
-		return 'upoads directory!'
+		return render_template("home.html", parsed_page=result)
 
 if __name__ == '__main__':
 	app.run(debug = True)
