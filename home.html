@@ -42,7 +42,14 @@
 
 	</head>
 	<body>
-		<div>
+		{% if ERROR %}
+     			<script type="text/javascript">
+				alert('{{ ERROR }}');
+                	</script>
+		{% endif %}
+             
+
+			<div>
 			<div align="right" style="display:block;width:1000px;margin:0 auto;position:relative;">
 				<form method="POST" action="/home/textInput">
 	
