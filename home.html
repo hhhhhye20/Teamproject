@@ -40,6 +40,21 @@
 
 </style>
 
+   		 <script language="javascript">
+
+                        function popup(frm) {
+                                var url    ="/home/word_analysis";
+                                var title  = "word_pop";
+                                var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0,left=20";
+                                window.open("", title,status);
+                                frm.target = title;
+                                frm.action = url;
+                                frm.method = "post";
+                                frm.submit();
+                        }
+                </script>
+
+
 	</head>
 	<body>
 		{% if ERROR %}
@@ -53,16 +68,13 @@
 			<div align="right" style="display:block;width:1000px;margin:0 auto;position:relative;">
 				<form method="POST" action="/home/textInput">
 	
-				<span style=padding:20px;font-size:20px;">
-				Enter the URL
-				</span>
+					<span style=padding:20px;font-size:20px;">Enter the URL</span>
 	
-				<input name="URL" type="text"style="width:800px;height:50px;font-size:30px;"><br>
-					
-				<button type="submit" name="process" value="Process"
-					 class="button">결과 출력 </button>
-				<input type="button" name="report" value="Report"
-					class="button">
+					<input name="URL" type="text"style="width:800px;height:50px;font-size:30px;"><br>
+			
+					<button type="submit" name="process" value="Process"
+						 class="button">결과 출력 </button>
+					<input type="button" name="report" value="Report" class="button">
 				
 				</form>	<hr style=margin-bottom:30px;>
 			</div>
@@ -73,41 +85,24 @@
 					<input type = "submit"/>
 				</form>
 			</div>
+
+			</div>
+				<h3> List of URL </h3>
+				{% for i in range(numbers) %}
+                                	<table>
+                                        	{{ urlList[i] }} {{ countList[i] }} {{ time[i] }}
+                                       		<form name="form">
+                                                	<input type="hidden" name="index" value='{{ i }}'>
+                                                	<input type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
+						</form>
+
+                                        	<button type="submit" value="URL simil">
+                                                	simillar
+                                        	</button>
+                                	</table>
+                		{% endfor %}
+
 			
-			<div>
-				
-			<div align="left" style="display:block;width:1000px;margin:0 auto;position:relative;">
-				<span style=padding-left:47px;font-size:20px;>
-					Open Source Project Analysis List
-				</span><br>
-				{% for html in urlList %}
-					<table width="880" class="table1">
-					<!--	<tr style="padding-left:10px;padding-rihgt:10px;">
-							<td width="100">shiro</td>
-							<td width="400">URL: http://www.infoq.com/articles/apache-shiro</td>
-							<td width="100">24534</td>
-							<td width="300">2019/2/28 13:11:45</td>
-						</tr> 
-						<tr>
-						<td colspan="4">security, Authentication, Authorization, container ...</td>
-						</tr> -->
-						{{ html }} </br>
-					</table>
-					{% endfor %}
-				
-			<!--	<table width="880" class="table2">
-                                       <tr style="padding-left:10px;padding-rihgt:10px;">
-                                                <td width="100">kafka</td>
-                                                <td width="400">URL: http://kafka.apache.org/</td>
-                                                <td width="100">24534</td>
-                                                <td width="300">2019/2/28 13:11:45</td>
-                                        </tr>
-                                        <tr>
-                                                <td colspan="4">Message, consumerm producer, relication, cluster, messaging...</td>
-					</tr> 
-			</table> -->
-		
-			</div>	
 		</div>
 	</body>
 </html>
