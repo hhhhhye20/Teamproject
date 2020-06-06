@@ -14,7 +14,7 @@ def process_new_sentence(s):
 		if word not in word_d.keys():
 			word_d[word]=0
 		word_d[word] += 1
- 
+
 def compute_tf(s):
 	bow = set()
 	# dictionary for words in the given sentence (document)
@@ -61,19 +61,24 @@ def tf_idf(s, n):
 	for i in range(0,len(sent_list)):
 		tf_d = compute_tf(sent_list[i])
 		result ={}
+
 		for word,tfval in tf_d.items():
 			result[word]=tfval*idf_d[word]
 		result2 = sorted(result.items(), key=lambda x: x[1], reverse=True)
 
-		ret={}	
+		ret={}
+		ret2=[]	
 		for j in range(0, 10):
 			
 			if j>len(result2)-1:
 				break;
-			ret[result2[j][0]]=result2[j][1]
+			#ret[result2[j][0]]=result2[j][1]
+			ret2.append(result2[j][0])
+			#print(type(result2[j][0]))
+		
 			
 		if n==i:
-			return ret
+			return ret2
 		
 		
 		
