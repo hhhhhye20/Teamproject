@@ -36,7 +36,7 @@ def upload_file():
 				for c in dlist:
 					str1=str1.replace(c, " ")
 				strList=str1.split('/')
-				
+				 
 
 				for i in range(len(strList)):
 					strList[i]=strList[i].strip()
