@@ -14,7 +14,7 @@ def process_new_sentence(s):
 		if word not in word_d.keys():
 			word_d[word]=0
 		word_d[word] += 1
-
+ 
 def compute_tf(s):
 	bow = set()
 	# dictionary for words in the given sentence (document)
