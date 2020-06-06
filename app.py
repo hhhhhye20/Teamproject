@@ -14,21 +14,21 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 app = Flask(__name__)
 
 @app.route('/')
-def home(URL=None):
-    return render_template('home.html', URL=URL)
+def home(ERROR=None):
+    return render_template('home.html', ERROR=ERROR)
 
 @app.route('/home/textInput', methods=['POST'])
 def search_url():
 
     if request.method == 'POST':
-        url = request.form['URL']
+        if 'URL' not in request.files:
+            return redirect(request.url)
     
     res = requests.get(url)
 
     html = BeautifulSoup(res.content, "html.parser")
 
-    return html.text
-
+    return 
 
 
 def allowed_file(filename):
@@ -41,12 +41,13 @@ def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
             flash('No file part')
-            return redirect(request.url)
+            return redirect(url_for('home'))
 
         f = request.files['file']
 
         if f.filename == '':
-            return redirect(request.url)
+            ERROR = "파일을 정하지 않았습니다."
+            return render_template('home.html', ERROR=ERROR)
 
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
@@ -54,21 +55,31 @@ def upload_file():
             
             f = open(filename, 'r')
             
-            htmlList = []
+            urlList = []
+            countList = []
+            time = []
+            numbers = 0
             while True:
                 url = f.readline().strip()
                 
                 if not url:
                     break
 
-                res = requests.get(url)
+                try :
+                    res = requests.get(url)
+                except :
+
+                    return redirect(url_for('home'))
 
                 html = BeautifulSoup(res.content, "html.parser")
                         
-                htmlList.append(html.text)
+                urlList.append(url)
+                countList.append(1000)
+                time.append(1)
+                numbers += 1
         
 
-    return render_template('home.html', urlList=htmlList)
+    return render_template('listPrint.html', urlList=urlList, countList=countList, time=time, numbers=numbers )
 
 if __name__ == '__main__':
     app.run(debug = True)
