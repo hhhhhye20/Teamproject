@@ -8,8 +8,12 @@ from bs4 import BeautifulSoup
 from flask import Flask, flash, request, redirect, url_for
 from flask import render_template
 from werkzeug.utils import secure_filename
+from elasticsearch import Elasticsearch
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
+
+es_host="127.0.0.1" 
+es_port="9200"
 
 app = Flask(__name__)
 
@@ -18,7 +22,7 @@ app = Flask(__name__)
 def home(ERROR=None, numbers=0):
     return render_template('home.html', ERROR=ERROR, numbers=numbers)
 
-
+ 
 urlList = []
 textList = []
 countList = []
@@ -194,6 +198,28 @@ def print_analysis():
         index = request.form['index']
         tf_idfWordList = tf_idf(textList, int(index))
         return render_template('word_analysis.html', parsed_page=tf_idfWordList)
+
+#elastic search
+def elastic_insert(url, word_num, time, data1, data2, i):
+	if len(data1) != len(data2):
+		print("error!")
+		return
+	
+	doc={'TF_idf':data1, 'similarity':data2, 'url':url, 'word_num':word_num, 'time':time}
+	res=es.index(index="analysis", doc_type='word', body=doc, id=i)
+
+
+
+def elastic_search(name, n):
+	res=es.get(index="analysis", doc_type="word", id=n)
+	dic=res['_source']
+	return(dic[name])
+
+def make_index(es, index_name):
+    """인덱스를 신규 생성한다(존재하면 삭제 후 생성) """
+    if es.indices.exists(index=index_name):
+        es.indices.delete(index=index_name)
+    print(es.indices.create(index=index_name))
 
 if __name__ == '__main__':
     app.run(debug = True)
