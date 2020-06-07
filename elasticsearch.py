@@ -3,7 +3,6 @@ from elasticsearch import Elasticsearch
 es_host="127.0.0.1" 
 es_port="9200"
 
-app = Flask(__name__)
 
 
 
