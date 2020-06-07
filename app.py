@@ -14,6 +14,8 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 es_host="127.0.0.1" 
 es_port="9200"
+es = Elasticsearch([{'host':es_host, 'port':es_port}], timeout=30)
+
 
 app = Flask(__name__)
 
@@ -41,6 +43,8 @@ def request_url():
 
     ERROR = input_items(url)
     
+    
+
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
 def allowed_file(filename):
@@ -75,7 +79,13 @@ def upload_file():
 
                 ERROR = input_items(url)
 
-
+    #elastic search 
+    es.indices.delete(index='analysis', ignore=[400,404])
+    for i in range(len(urlList)):
+        elastic_insert(urlList[i], countList[i], time[i], i)
+        print(elastic_search("url", i))
+        print(elastic_search("word_num", i))
+        print(elastic_search("time", i))
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
 #input items
@@ -203,12 +213,9 @@ def print_analysis():
         return render_template('word_analysis.html', parsed_page=tf_idfWordList)
 
 #elastic search
-def elastic_insert(url, word_num, time, data1, data2, i):
-	if len(data1) != len(data2):
-		print("error!")
-		return
-	
-	doc={'TF_idf':data1, 'similarity':data2, 'url':url, 'word_num':word_num, 'time':time}
+def elastic_insert(url, word_num, time, i):
+
+	doc={'url':url, 'word_num':word_num, 'time':time}
 	res=es.index(index="analysis", doc_type='word', body=doc, id=i)
 
 
@@ -225,4 +232,5 @@ def make_index(es, index_name):
     print(es.indices.create(index=index_name))
 
 if __name__ == '__main__':
+
     app.run(debug = True)
