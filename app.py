@@ -20,14 +20,8 @@ app = Flask(__name__)
 
 @app.route('/')
 def home(ERROR=None, numbers=0):
-<<<<<<< HEAD
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
-=======
-    return render_template('home.html', ERROR=ERROR, numbers=numbers)
-
- 
->>>>>>> 19bedd926a5e9f3cd84bd0c1cdf3f1fd0484b89b
 urlList = []
 textList = []
 countList = []

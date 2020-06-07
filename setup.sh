@@ -12,7 +12,6 @@ fi
 	
 cp app.py $SETUP_DIR	
 cp home.html $WEB_DIR
-cp listPrint.html $WEB_DIR
 cp word_analysis.html $WEB_DIR
 cd $SETUP_DIR
 
