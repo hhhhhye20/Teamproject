@@ -22,7 +22,7 @@ app = Flask(__name__)
 def home(ERROR=None, numbers=0):
     return render_template('home.html', ERROR=ERROR, numbers=numbers)
 
-
+ 
 urlList = []
 textList = []
 countList = []
