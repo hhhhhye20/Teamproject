@@ -43,8 +43,6 @@ def request_url():
 
     ERROR = input_items(url)
     
-    
-
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
 def allowed_file(filename):
@@ -79,13 +77,6 @@ def upload_file():
 
                 ERROR = input_items(url)
 
-    #elastic search 
-    es.indices.delete(index='analysis', ignore=[400,404])
-    for i in range(len(urlList)):
-        elastic_insert(urlList[i], countList[i], time[i], i)
-        print(elastic_search("url", i))
-        print(elastic_search("word_num", i))
-        print(elastic_search("time", i))
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
 #input items
@@ -118,6 +109,14 @@ def input_items(url):
                 textList.append(html.get_text())
                 countList.append(process_new_sentence(html.get_text()))
                 time.append(stop - start)
+                
+                #elastic search
+                es.indices.delete(index='analysis', ignore=[400,404])
+                elastic_insert(urlList[numbers], countList[numbers], time[numbers], numbers)
+                print(elastic_search("url", numbers))
+                print(elastic_search("word_num", numbers))
+                print(elastic_search("time", numbers))
+
                 numbers += 1
 
                 return None
@@ -213,15 +212,14 @@ def print_analysis():
         return render_template('word_analysis.html', parsed_page=tf_idfWordList)
 
 #elastic search
-def elastic_insert(url, word_num, time, i):
+def elastic_insert(url, word_num, time, number):
 
 	doc={'url':url, 'word_num':word_num, 'time':time}
-	res=es.index(index="analysis", doc_type='word', body=doc, id=i)
+	res=es.index(index="analysis", doc_type='word', body=doc, id=number)
 
 
-
-def elastic_search(name, n):
-	res=es.get(index="analysis", doc_type="word", id=n)
+def elastic_search(name, number):
+	res=es.get(index="analysis", doc_type="word", id=number)
 	dic=res['_source']
 	return(dic[name])
 
@@ -232,5 +230,4 @@ def make_index(es, index_name):
     print(es.indices.create(index=index_name))
 
 if __name__ == '__main__':
-
     app.run(debug = True)
