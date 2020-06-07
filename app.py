@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
 
-import os, re, requests, math
+import os, re, requests, math, timeit
 from math import log
 from nltk import word_tokenize
 from bs4 import BeautifulSoup
@@ -16,8 +16,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home(ERROR=None, numbers=0):
-    return render_template('home.html', ERROR=ERROR, numbers=numbers)
-
+    return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
 urlList = []
 textList = []
@@ -26,54 +25,43 @@ time = []
 wordList = []
 numbers = 0
 
+#input text
 @app.route('/home/textInput', methods=['POST'])
 def request_url():
-    global numbers
-
     if request.method == 'POST':
-        try :
             url = request.form['URL']
-        except :
-            ERROR = "실패 : 부정확한 ULR 주소를 입력하셨습니다."
-            return render_template('home.html', ERROR=ERROR)
-    
-    res = requests.get(url)
+        
+    if url == '':
+        ERROR = "실패 : 아무것도 입력되지 않았습니다."
+        return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
-    html = BeautifulSoup(res.content, "html.parser")
+    ERROR = input_items(url)
     
-    urlList.append(url)
-    textList.append(html.text)
-    countList.append(process_new_sentence(html.text))
-    time.append(1)
-    numbers+=1
-
-    return render_template('home.html', urlList=urlList, countList=countList, time=time, numbers=numbers ) 
+    return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
 def allowed_file(filename):
     return '.' in filename and \
             filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-
+#input file
 @app.route('/home/fileUpload', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         if 'file' not in request.files:
             ERROR = "실패 : 존재하지 않는 파일입니다."
-            return render_template('home.html', ERROR=ERROR)
+            return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
         f = request.files['file']
 
         if f.filename == '':
-            ERROR = "실패 : 파일을 정하지 않았습니다."
-            return render_template('home.html', ERROR=ERROR)
+            ERROR = '실패 : 파일을 정하지 않았습니다.'
+            return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
         if f and allowed_file(f.filename):
             filename = secure_filename(f.filename)
             f.save(filename)
             
             f = open(filename, 'r')
-            
-            global numbers
 
             while True:
                 url = f.readline().strip()
@@ -81,9 +69,21 @@ def upload_file():
                 if not url:
                     break
 
+                ERROR = input_items(url)
+
+
+    return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
+
+#input items
+def input_items(url):
+                global numbers
+            
                 if url in urlList:
-                    ERROR = " 중복 : 중복된 url을 입력하셨습니다."
-                    return render_template('home.html', ERROR=ERROR)
+                    ERROR=" 중복 : 중복된 url을 입력하셨습니다."
+                    return ERROR
+                
+                #processing time start
+                start = timeit.default_timer()
 
                 try :
                     res = requests.get(url)
@@ -92,19 +92,22 @@ def upload_file():
                         ERROR = "실패 : 인터넷에 연결되어 있지 않습니다."
                     else:
                         ERROR = "실패 : 부정확한 주소를 입력하셨습니다."
-                    
-                    return render_template('home.html', ERROR=ERROR)
+
+                    return ERROR
 
                 html = BeautifulSoup(res.content, "html.parser")
-                        
-                urlList.append(url)
-                textList.append(html.text)
-                countList.append(process_new_sentence(html.text))
-                time.append(1)
-                numbers += 1
-        
 
-    return render_template('home.html', urlList=urlList, countList=countList, time=time, numbers=numbers )
+                #processing time end
+                stop = timeit.default_timer()
+
+                urlList.append(url)
+                textList.append(html.get_text())
+                countList.append(process_new_sentence(html.get_text()))
+                time.append(stop - start)
+                numbers += 1
+
+                return None
+
 
 word_d = {}
 sent_list = []
