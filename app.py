@@ -9,6 +9,7 @@ from flask import Flask, flash, request, redirect, url_for
 from flask import render_template
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
+from sklearn.feature_extraction.text import TfidfVectorizer
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
@@ -42,6 +43,8 @@ def request_url():
         return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
     ERROR = input_items(url)
+    
+    tf_idf()
     
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
@@ -77,6 +80,8 @@ def upload_file():
 
                 ERROR = input_items(url)
 
+        tf_idf()
+
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
 #input items
@@ -101,13 +106,26 @@ def input_items(url):
                     return ERROR
 
                 html = BeautifulSoup(res.content, "html.parser")
-
+                
                 #processing time end
                 stop = timeit.default_timer()
+                
+                #script_tag = html.find_all(['script', 'style', 'header', 'footer', 'form'])
+
+                #extract 함수는 soup 객체에서 해당 태그를 제거합니다.
+                #for script in script_tag:
+                    #script.extract()
+
+                # 텍스트 단위 결합을 '\n'(줄바꿈)으로 합니다.
+                # 각 텍스트 단위의 시작과 끝에서 공백을 제거합니다.
+                #text = html.get_text('\n', strip=True)
+
+                #text = re.sub('[—·™\-=+,#/\—,/:¶>▼▲»@|→``?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', ' ', text)
+                #print(text)
 
                 urlList.append(url)
-                textList.append(html.get_text())
-                countList.append(process_new_sentence(html.get_text()))
+                textList.append(html.text)
+                countList.append(count_of_words(html.text))
                 time.append(stop - start)
                 
                 #elastic search
@@ -122,94 +140,40 @@ def input_items(url):
                 return None
 
 
-word_d = {}
-sent_list = []
-
-def process_new_sentence(s):
-        sent_list.append(s)
+def count_of_words(s):
         tokenized = word_tokenize(s)
 
-        for word in tokenized:
-            if word not in word_d.keys():
-                word_d[word]=0
-            word_d[word] += 1
-        
         return len(tokenized)
+
+def tf_idf():
+        tfidf_vectorizer = TfidfVectorizer()
+        tfidf_vectorizer.fit(textList)
+        words = sorted(tfidf_vectorizer.vocabulary_.keys())
+        tf_idf = tfidf_vectorizer.transform(textList).toarray()
+
+        wordList.clear()
         
+        for i in range(numbers):
+            
+            result ={}
+            
+            for j in range(len(words)):
+                result[words[j]]=tf_idf[i][j]
+                
+            keys = sorted(result.keys(), reverse=True, key=lambda x : result[x])[:10]
+                
+            print(keys)
 
-def compute_tf(s):
-	bow = set()
-	# dictionary for words in the given sentence (document)
-	wordcount_d = {}
+            wordList.append(keys)
 
-	tokenized = word_tokenize(s)
-	for tok in tokenized:
-		if tok not in wordcount_d.keys():
-			wordcount_d[tok]=0
-		wordcount_d[tok] += 1
-		bow.add(tok)
-	tf_d = {}
-	for word,count in wordcount_d.items():
-		tf_d[word]=count/float(len(bow))
-	return tf_d
-
-
-
-def compute_idf():
-	Dval = len(sent_list)
-	# build set of words
-	bow = set()
-
-	for i in range(0,len(sent_list)):
-		tokenized = word_tokenize(sent_list[i])
-		for tok in tokenized:
-			bow.add(tok)
-
-	idf_d = {}
-	for t in bow:
-		cnt = 0
-		for s in sent_list:
-			if t in word_tokenize(s):
-				cnt += 1
-			
-		idf_d[t]=log(Dval/cnt)
-	return idf_d
-
-
-def tf_idf(s, n):
-	for i in range(len(s)):
-		process_new_sentence(s[i])
-	
-	idf_d = compute_idf()
-	for i in range(0,len(sent_list)):
-		tf_d = compute_tf(sent_list[i])
-		result ={}
-
-		for word,tfval in tf_d.items():
-			result[word]=tfval*idf_d[word]
-		result2 = sorted(result.items(), key=lambda x: x[1], reverse=True)
-
-		ret={}
-		ret2=[]	
-		for j in range(0, 10):
-			
-			if j>len(result2)-1:
-				break;
-			#ret[result2[j][0]]=result2[j][1]
-			ret2.append(result2[j][0])
-			#print(type(result2[j][0]))
-		
-			
-		if n==i:
-			return ret2
 
 @app.route('/home/word_analysis', methods=['POST'])
 def print_analysis():
 
     if request.method == 'POST':
         index = request.form['index']
-        tf_idfWordList = tf_idf(textList, int(index))
-        return render_template('word_analysis.html', parsed_page=tf_idfWordList)
+        #tf_idfWordList = tf.tf_idf(textList, int(index))
+        return render_template('word_analysis.html', parsed_page=wordList[int(index)])
 
 #elastic search
 def elastic_insert(url, word_num, time, number):
