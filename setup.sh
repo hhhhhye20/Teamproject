@@ -12,11 +12,12 @@ fi
 
 if [ ! -d "$ELA_DIR" ]; then
 	echo "ERROR : Elasticsearch을 찾을 수 없습니다. 현재 위치에 elasticsearch-7.6.2 폴더가 있는지 확인해 주세요."
-else
+#else
 	cd $ELA_DIR
 	./bin/elasticsearch -d
 	cd ..
 
+	cp tf.py $SETUP_DIR
 	cp app.py $SETUP_DIR	
 	cp home.html $WEB_DIR
 	cp word_analysis.html $WEB_DIR
