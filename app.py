@@ -102,13 +102,37 @@ def input_items(url):
                     return ERROR
 
                 html = BeautifulSoup(res.content, "html.parser")
+                html = html.find_all('p')
+
+                a=[]
+
+                for alist in html:
+                        lists = alist.text
+                        a.append(lists)
+
+                str1='/'.join(a)
+                dlist = [",", ".", "'", ";", "!", "\n", "©", "»", "(", ")", "$", "="]
+
+                for c in dlist:
+                        str1=str1.replace(c, " ")
+                strList=str1.split('/')
+                strList=str1.split(' ')
+                countList.append(len(strList))
+               
+                for i in range(len(strList)):
+                        strList[i]=strList[i].strip()
+                        
+                        
+                strList=' '.join(strList)
+               # print(strList)
+               # result=[]
+                #result.append(strList)
 
                 #processing time end
                 stop = timeit.default_timer()
-
+               
                 urlList.append(url)
-                textList.append(html.get_text())
-                countList.append(process_new_sentence(html.get_text()))
+                textList.append(strList)
                 time.append(stop - start)
                 
                 #elastic search
