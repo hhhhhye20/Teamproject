@@ -9,6 +9,7 @@ from flask import Flask, flash, request, redirect, url_for
 from flask import render_template
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
+import tf
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
@@ -137,78 +138,12 @@ def process_new_sentence(s):
         return len(tokenized)
         
 
-def compute_tf(s):
-	bow = set()
-	# dictionary for words in the given sentence (document)
-	wordcount_d = {}
-
-	tokenized = word_tokenize(s)
-	for tok in tokenized:
-		if tok not in wordcount_d.keys():
-			wordcount_d[tok]=0
-		wordcount_d[tok] += 1
-		bow.add(tok)
-	tf_d = {}
-	for word,count in wordcount_d.items():
-		tf_d[word]=count/float(len(bow))
-	return tf_d
-
-
-
-def compute_idf():
-	Dval = len(sent_list)
-	# build set of words
-	bow = set()
-
-	for i in range(0,len(sent_list)):
-		tokenized = word_tokenize(sent_list[i])
-		for tok in tokenized:
-			bow.add(tok)
-
-	idf_d = {}
-	for t in bow:
-		cnt = 0
-		for s in sent_list:
-			if t in word_tokenize(s):
-				cnt += 1
-			
-		idf_d[t]=log(Dval/cnt)
-	return idf_d
-
-
-def tf_idf(s, n):
-	for i in range(len(s)):
-		process_new_sentence(s[i])
-	
-	idf_d = compute_idf()
-	for i in range(0,len(sent_list)):
-		tf_d = compute_tf(sent_list[i])
-		result ={}
-
-		for word,tfval in tf_d.items():
-			result[word]=tfval*idf_d[word]
-		result2 = sorted(result.items(), key=lambda x: x[1], reverse=True)
-
-		ret={}
-		ret2=[]	
-		for j in range(0, 10):
-			
-			if j>len(result2)-1:
-				break;
-			#ret[result2[j][0]]=result2[j][1]
-			ret2.append(result2[j][0])
-			#print(type(result2[j][0]))
-		
-			
-		if n==i:
-			return ret2
-
 @app.route('/home/word_analysis', methods=['POST'])
 def print_analysis():
 
     if request.method == 'POST':
         index = request.form['index']
-        tf_idfWordList = tf_idf(textList, int(index))
+        tf_idfWordList = tf.tf_idf(textList, int(index))
         return render_template('word_analysis.html', parsed_page=tf_idfWordList)
 
 #elastic search
