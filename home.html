@@ -42,7 +42,7 @@
 
    		 <script language="javascript">
 
-                        function popup(frm) {
+                        function popup_tfidf(frm) {
                                 var url    ="/home/word_analysis";
                                 var title  = "word_pop";
                                 var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0,left=20";
@@ -52,6 +52,18 @@
                                 frm.method = "post";
                                 frm.submit();
                         }
+
+			function popup_cosine(frm) {
+                                var url    ="/home/cosine_similarity";
+                                var title  = "sim_pop";
+                                var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0,left=20";
+                                window.open("", title,status);
+                                frm.target = title;
+                                frm.action = url;
+                                frm.method = "post";
+                                frm.submit();
+                        }
+
                 </script>
 
 
@@ -93,12 +105,14 @@
                                         	{{ urlList[i] }} {{ countList[i] }} {{ time[i] }}
                                        		<form name="form">
                                                 	<input type="hidden" name="index" value='{{ i }}'>
-                                                	<input type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
+                                                	<input type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
 						</form>
 
-                                        	<button type="submit" value="URL simil">
-                                                	simillar
-                                        	</button>
+						<form name="form">
+                                                        <input type="hidden" name="index" value='{{ i }}'>
+                                                        <input type="button" value="Cosine Similarity" onclick="javascript:popup_cosine(this.form);">
+                                                </form>
+
                                 	</table>
                 		{% endfor %}
 

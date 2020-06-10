@@ -1,0 +1,78 @@
+
+<html>
+<head>
+<meta charset="utf-8">
+<title>Title of Web Page</title>
+
+ <style type="text/css">
+   div.one {background-color:#D5D5D5;  line-height:2; 
+padding:5px; padding-left:30;border-top:4px solid black;
+margin-bottom:5px;
+}
+   div.two {background-color: #FAFAD2; line-height:2; 
+padding:5px; padding-left:30;border-top:4px solid black;
+margin-bottom:5px;
+}
+div.main{padding:50px; width:500px;  border=5px solid #000; position:absolute; top:0; right:0; bottom:0; left:0; margin:auto;}
+div.search{position:center;}
+
+h1,table,th,td{ color:#489CFF;}
+
+.myButton {
+	background-color:#7892c2;
+	border-radius:28px;
+	border:1px solid #4e6096;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:22px;
+	padding:16px 31px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #283966;
+	float:right;
+}
+.myButton:hover {
+	background-color:#476e9e;
+}
+.myButton:active {
+	position:relative;
+	top:1px;
+}
+</style>
+ 
+</head>
+
+
+<body> 
+
+<div class="main">
+
+
+
+<h1>Top3-similarity</h1>
+
+<div class="one">
+<table>
+<tr><th>{{top_url[0]}}</th></tr>
+
+</table>
+</div>
+
+<div class="two">
+<table>
+<tr><th>{{top_url[1]}}</th></tr>
+</table>
+</div>
+
+<div class="one">
+<table>
+<tr><th>{{top_url[2]}}</th></tr>
+
+</table>
+</div>
+
+</div>
+</body>
+
+</html>

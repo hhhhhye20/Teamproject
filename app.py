@@ -10,6 +10,7 @@ from flask import render_template
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
 from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import linear_kernel
 
 ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
@@ -30,6 +31,7 @@ textList = []
 countList = []
 time = []
 wordList = []
+simList = []
 numbers = 0
 
 #input text
@@ -45,6 +47,7 @@ def request_url():
     ERROR = input_items(url)
     
     tf_idf()
+    cos_sim()
     
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
@@ -81,6 +84,7 @@ def upload_file():
                 ERROR = input_items(url)
 
         tf_idf()
+        cos_sim()
 
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
@@ -145,11 +149,14 @@ def count_of_words(s):
 
         return len(tokenized)
 
+
+vectorizer = TfidfVectorizer() # 객체 선언
+
 def tf_idf():
-        tfidf_vectorizer = TfidfVectorizer()
-        tfidf_vectorizer.fit(textList)
-        words = sorted(tfidf_vectorizer.vocabulary_.keys())
-        tf_idf = tfidf_vectorizer.transform(textList).toarray()
+        vectorizer = TfidfVectorizer()
+        vectorizer.fit(textList)
+        words = sorted(vectorizer.vocabulary_.keys())
+        tf_idf = vectorizer.transform(textList).toarray()
 
         wordList.clear()
         
@@ -166,14 +173,42 @@ def tf_idf():
 
             wordList.append(keys)
 
+def cos_sim():
+        cosine_matrix = vectorizer.fit_transform(textList) #벡터화
+        cosine_sim = linear_kernel(cosine_matrix, cosine_matrix) #cosine 유사도
+
+        simList.clear()
+
+        for i in range(numbers):
+
+            result ={}
+
+            for j in range(numbers):
+                result[urlList[j]]=cosine_sim[i][j]
+
+            keys = sorted(result.keys(), reverse=True, key=lambda x : result[x])[1:4]
+
+            print(keys)
+
+            simList.append(keys)
+
+
 
 @app.route('/home/word_analysis', methods=['POST'])
 def print_analysis():
 
     if request.method == 'POST':
         index = request.form['index']
-        #tf_idfWordList = tf.tf_idf(textList, int(index))
         return render_template('word_analysis.html', parsed_page=wordList[int(index)])
+
+
+@app.route('/home/cosine_similarity', methods=['POST'])
+def print_similarity():
+
+    if request.method == 'POST':
+        index = request.form['index']
+        return render_template('cos_sim.html', top_url=simList[int(index)])
+
 
 #elastic search
 def elastic_insert(url, word_num, time, number):

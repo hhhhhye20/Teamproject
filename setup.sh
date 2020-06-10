@@ -13,6 +13,7 @@ fi
 cp app.py $SETUP_DIR
 cp home.html $WEB_DIR
 cp word_analysis.html $WEB_DIR
+cp cos_sim.html $WEB_DIR
 
 if [ ! -d "$ELA_DIR" ]; then
 	echo "ERROR : Elasticsearch을 찾을 수 없습니다. 현재 위치에 elasticsearch-7.6.2 폴더가 있는지 확인해 주세요."
