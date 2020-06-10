@@ -232,6 +232,11 @@ def elastic_search(name, number):
 	dic=res['_source']
 	return(dic[name])
 
+#elasticsearch, analysis 인덱스 가지는 모든 데이터 삭제
+def delete_index(es):
+    es.indices.delete(index='analysis', ignore=[400,404])
+        
+
 def make_index(es, index_name):
     """인덱스를 신규 생성한다(존재하면 삭제 후 생성) """
     if es.indices.exists(index=index_name):
