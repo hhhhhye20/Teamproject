@@ -233,7 +233,7 @@ def elastic_search(name, number):
 	return(dic[name])
 
 #elasticsearch, analysis 인덱스 가지는 모든 데이터 삭제
-def delete_index(es):
+def delete_index():
     es.indices.delete(index='analysis', ignore=[400,404])
         
 
