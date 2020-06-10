@@ -199,7 +199,12 @@ def print_analysis():
 
     if request.method == 'POST':
         index = request.form['index']
-        return render_template('word_analysis.html', parsed_page=wordList[int(index)])
+        if numbers < 2 :
+            ERROR = "실패 : 단어들의 TF_IDF를 산출해내기 위해서는 url주소가 2개 이상이어야합니다."
+        else :
+            ERROR = None
+
+        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=wordList[int(index)])
 
 
 @app.route('/home/cosine_similarity', methods=['POST'])
@@ -207,7 +212,12 @@ def print_similarity():
 
     if request.method == 'POST':
         index = request.form['index']
-        return render_template('cos_sim.html', top_url=simList[int(index)])
+        if numbers < 4 :
+            ERROR = "실패 : 유사도를 분석하기 위해서는 url주소가 4개 이상이어야합니다."
+        else :
+            ERROR = None
+
+        return render_template('cos_sim.html', ERROR=ERROR, top_url=simList[int(index)])
 
 
 #elastic search
