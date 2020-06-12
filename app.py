@@ -21,7 +21,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home(ERROR=None, numbers=0):
-
+    reset()
     make_index('analysis')
 
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
@@ -84,6 +84,8 @@ def upload_file():
 
         tf_idf()
         cos_sim()
+        for i in range(len(wordList)):
+            elastic_insert(wordList[i], simList[i], "temp", i)
 
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
@@ -137,7 +139,7 @@ def input_items(url):
                 
 
                 #elastic search
-                elastic_insert(urlList[numbers], countList[numbers], time[numbers], numbers)
+                #elastic_insert(urlList[numbers], countList[numbers], time[numbers], numbers)
                 #print(elastic_search("url", numbers))
                 #print(elastic_search("word_num", numbers))
                 #print(elastic_search("time", numbers))
@@ -162,7 +164,7 @@ def tf_idf():
         tf_idf = vectorizer.transform(textList).toarray()
 
         wordList.clear()
-        
+
         for i in range(numbers):
             
             result ={}
@@ -207,7 +209,7 @@ def print_analysis():
         else :
             ERROR = None
 
-        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=wordList[int(index)])
+        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=elastic_search("wordList", int(index)))
 
 
 @app.route('/home/cosine_similarity', methods=['POST'])
@@ -220,25 +222,40 @@ def print_similarity():
         else :
             ERROR = None
 
-        return render_template('cos_sim.html', ERROR=ERROR, top_url=simList[int(index)])
+        return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("simList", int(index)))
 
 
 #elastic search
-def elastic_insert(url, word_num, time, number):
+#코사인 유사도 퍼센트 값 자리 주석처리
+def elastic_insert(wordList, simList, simPercent, number):
 
 	e={
-                "url":url,
-                "word_num":word_num,
-                "time":time
+                "wordList":wordList,
+                "simList":simList,
+                #"simPercent":simPercent
         }
 
-	res=es.index(index="analysis", doc_type='_doc',  id=number + 1, body=e)
+	res=es.index(index="analysis", doc_type='_doc',  id=number, body=e)
 
 
 def elastic_search(name, number):
 	res=es.get(index="analysis", doc_type="_doc", id=number)
 	dic=res['_source']
 	return(dic[name])
+
+#리셋함수 '/'에서 실행
+def reset():
+    es.indices.delete(index='analysis', ignore=[400,404])
+    urlList.clear()
+    textList.clear()
+    countList.clear()
+    time.clear()
+    wordList.clear()
+    simList.clear()
+    global numbers 
+    numbers = 0
+       
+
 
 def make_index(index_name):
     """인덱스를 신규 생성한다(존재하면 삭제 후 생성) """
