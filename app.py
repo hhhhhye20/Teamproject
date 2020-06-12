@@ -16,14 +16,14 @@ ALLOWED_EXTENSIONS = {'txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'}
 
 es_host="127.0.0.1" 
 es_port="9200"
-es = Elasticsearch([{'host':es_host, 'port':es_port}], timeout=30)
-
 
 app = Flask(__name__)
 
-
 @app.route('/')
 def home(ERROR=None, numbers=0):
+
+    make_index('analysis')
+
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
 urlList = []
@@ -39,7 +39,6 @@ numbers = 0
 def request_url():
     if request.method == 'POST':
             url = request.form['URL']
-        
     if url == '':
         ERROR = "실패 : 아무것도 입력되지 않았습니다."
         return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
@@ -98,6 +97,8 @@ def input_items(url):
                 
                 #processing time start
                 start = timeit.default_timer()
+                
+                global res
 
                 try :
                     res = requests.get(url)
@@ -110,34 +111,36 @@ def input_items(url):
                     return ERROR
 
                 html = BeautifulSoup(res.content, "html.parser")
-                
-                #processing time end
-                stop = timeit.default_timer()
-                
-                #script_tag = html.find_all(['script', 'style', 'header', 'footer', 'form'])
+
+                script_tag = html.find_all(['script', 'style', 'header', 'footer', 'form'])
 
                 #extract 함수는 soup 객체에서 해당 태그를 제거합니다.
-                #for script in script_tag:
-                    #script.extract()
-
+                for script in script_tag:
+                    script.extract()
+                
                 # 텍스트 단위 결합을 '\n'(줄바꿈)으로 합니다.
                 # 각 텍스트 단위의 시작과 끝에서 공백을 제거합니다.
-                #text = html.get_text('\n', strip=True)
+                text = html.get_text('\n', strip=True)
 
-                #text = re.sub('[—·™\-=+,#/\—,/:¶>▼▲»@|→``?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', ' ', text)
+                text = re.sub('[—·™\-=+,#/\—,/:¶>▼▲»@|→``?:^$.@*\"※~&%ㆍ!』\\‘|\(\)\[\]\<\>`\'…》]', ' ', text)
                 #print(text)
 
                 urlList.append(url)
-                textList.append(html.text)
-                countList.append(count_of_words(html.text))
+                textList.append(text)
+                countList.append(count_of_words(text))
+
+                #processing time end
+                stop = timeit.default_timer()
+
                 time.append(stop - start)
+               
                 
+
                 #elastic search
-                es.indices.delete(index='analysis', ignore=[400,404])
                 elastic_insert(urlList[numbers], countList[numbers], time[numbers], numbers)
-                print(elastic_search("url", numbers))
-                print(elastic_search("word_num", numbers))
-                print(elastic_search("time", numbers))
+                #print(elastic_search("url", numbers))
+                #print(elastic_search("word_num", numbers))
+                #print(elastic_search("time", numbers))
 
                 numbers += 1
 
@@ -223,25 +226,27 @@ def print_similarity():
 #elastic search
 def elastic_insert(url, word_num, time, number):
 
-	doc={'url':url, 'word_num':word_num, 'time':time}
-	res=es.index(index="analysis", doc_type='word', body=doc, id=number)
+	e={
+                "url":url,
+                "word_num":word_num,
+                "time":time
+        }
+
+	res=es.index(index="analysis", doc_type='_doc',  id=number + 1, body=e)
 
 
 def elastic_search(name, number):
-	res=es.get(index="analysis", doc_type="word", id=number)
+	res=es.get(index="analysis", doc_type="_doc", id=number)
 	dic=res['_source']
 	return(dic[name])
 
-#elasticsearch, analysis 인덱스 가지는 모든 데이터 삭제
-def delete_index():
-    es.indices.delete(index='analysis', ignore=[400,404])
-        
-
-def make_index(es, index_name):
+def make_index(index_name):
     """인덱스를 신규 생성한다(존재하면 삭제 후 생성) """
     if es.indices.exists(index=index_name):
         es.indices.delete(index=index_name)
     print(es.indices.create(index=index_name))
 
 if __name__ == '__main__':
+    es = Elasticsearch([{'host':es_host, 'port':es_port}], timeout=30)
+
     app.run(debug = True)
