@@ -3,10 +3,16 @@
 <html>
 	<head>
 		<title>HOME</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 <style type="text/css">
 
-	body{color:#084B8A;}
+	body{
+		background-color: #e7dfd4;
+	}
 
 	.button {
 		border:2px solid black;
@@ -37,70 +43,123 @@
                 padding-left:28px;
                 font-size:15px;
 	}
+	
+	table {
+		width: 80%;
+		border-top: 1px solid #444444;
+		border-collapse: collapse;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	th {
+		border-bottom: 1px solid #444444;
+		padding: 10px;
+		background-color: rgba(255, 255, 255, 0.7);
+
+	}
+	
+	td {
+		border-bottom: 1px solid #444444;
+		padding; 10px;
+		background-color: rgba(255, 255, 255, 05);
+	}
 
 </style>
 
+   		 <script language="javascript">
+
+                        function popup(frm) {
+                                var url    ="/home/word_analysis";
+                                var title  = "word_pop";
+                                var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0,left=20";
+                                window.open("", title,status);
+                                frm.target = title;
+                                frm.action = url;
+                                frm.method = "post";
+                                frm.submit();
+                        }
+								function popup2(frm) {
+											var url = "/home/cos_simil";
+											var title = "word_pop";
+											var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0, left=20";
+											window.open("",title,status);
+											frm.target = title;
+											frm.action = url;
+											frm.method = "post";
+											frm.submit();
+								}
+
+                </script>
+
+
 	</head>
 	<body>
-		<div>
-			<div align="right" style="display:block;width:1000px;margin:0 auto;position:relative;">
+		{% if ERROR %}
+     			<script type="text/javascript">
+				alert('{{ ERROR }}');
+                	</script>
+		{% endif %}
+             
+<br></br>
+			<div class="text-center" style="display:block;width:1000px;margin:0 auto;position:relative;">
 				<form method="POST" action="/home/textInput">
 	
-				<span style=padding:20px;font-size:20px;">
-				Enter the URL
-				</span>
+					<span style=padding:50px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
 	
-				<input name="URL" type="text"style="width:800px;height:50px;font-size:30px;"><br>
-					
-				<button type="submit" name="process" value="Process"
-					 class="button">결과 출력 </button>
-				<input type="button" name="report" value="Report"
-					class="button">
+					<input name="URL" type="text"style="width:450px;height:40px;font-size:25px;">
+			
+					<button type="submit" name="process" value="Process"
+						 class="btn btn-info">Result</button>
+					<input type="button" name="report" value="Reset" class="btn btn-info">
 				
-				</form>	<hr style=margin-bottom:30px;>
-			</div>
-
-			<div>
-				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-					<input type = "file" name = "file" />
-					<input type = "submit"/>
 				</form>
 			</div>
+
+			<div style="position: relative; left: 430px; top: 20px;">
+				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
+				<span style="padding:50px; font-size:25px;"><strong>Submit URL File&nbsp&nbsp ▶ </strong></span>
+				<span class="btn btn-info btn-file">Search
+					<input class="text-center" type = "file" name = "file" style="display:none;"/>
+					</span>
+					<input class="btn btn-info"type = "submit" value="Submit">
+					<br>
+
+			</div>
+			</form>
+
+<br></br>
+			</div>
+                                	<table class="text-center">
+												<thead>
+													<tr class="text-center">
+														<th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
+												</thead>
+											<tbody>		
+
+								{% for i in range(numbers) %}
+												<tr>	
+                                       <td>{{ urlList[i] }}</td>
+													<td>{{ countList[i] }}</td>
+													<td>{{ time[i] }}</td>
+                                       <td>	<form name="form">
+                                                	<input type="hidden" name="index" value='{{ i }}'>
+                                                	<input type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
+															</form>
+													</td>
+
+													
+													<td>	<form name="form">
+																<input type="hidden" name="index" value='{{ i }}'>
+																<input type="button" value="Similarity" onclick="javascript:popup2(this.form);">
+															</form>
+													</td>
+												</tr>
+                		{% endfor %}
+											</tbody>
+										</table>
+
 			
-			<div>
-				
-			<div align="left" style="display:block;width:1000px;margin:0 auto;position:relative;">
-				<span style=padding-left:47px;font-size:20px;>
-					Open Source Project Analysis List
-				</span><br>
-				{% for html in urlList %}
-					<table width="880" class="table1">
-					<!--	<tr style="padding-left:10px;padding-rihgt:10px;">
-							<td width="100">shiro</td>
-							<td width="400">URL: http://www.infoq.com/articles/apache-shiro</td>
-							<td width="100">24534</td>
-							<td width="300">2019/2/28 13:11:45</td>
-						</tr> 
-						<tr>
-						<td colspan="4">security, Authentication, Authorization, container ...</td>
-						</tr> -->
-						{{ html }} </br>
-					</table>
-					{% endfor %}
-				
-			<!--	<table width="880" class="table2">
-                                       <tr style="padding-left:10px;padding-rihgt:10px;">
-                                                <td width="100">kafka</td>
-                                                <td width="400">URL: http://kafka.apache.org/</td>
-                                                <td width="100">24534</td>
-                                                <td width="300">2019/2/28 13:11:45</td>
-                                        </tr>
-                                        <tr>
-                                                <td colspan="4">Message, consumerm producer, relication, cluster, messaging...</td>
-					</tr> 
-			</table> -->
-		
-			</div>	
 		</div>
 	</body>
 </html>
