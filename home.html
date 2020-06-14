@@ -3,18 +3,15 @@
 <html>
 	<head>
 		<title>HOME</title>
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
 <style type="text/css">
 
-	body{color:#084B8A;}
-
-	.button {
-		border:2px solid black;
-		background: linear-gradient(to bottom, rgba(59,103,158,1) 0%,rgba(43,136,217,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%);
-		padding:10px 55px;
-		margin:10px;
-		font-size:20px;
-		border-radius:30px;
+	body{
+		background-color: #e7dfd4;
 	}
 
 	.table1 {
@@ -37,6 +34,33 @@
                 padding-left:28px;
                 font-size:15px;
 	}
+	
+	table {
+		width: 80%;
+		border-top: 1px solid #444444;
+		border-collapse: collapse;
+		margin-left: auto;
+		margin-right: auto;
+	}
+
+	th {
+		border-bottom: 1px solid #444444;
+		padding: 10px;
+		background-color: rgba(255, 255, 255, 0.7);
+
+	}
+	
+	td {
+		border-bottom: 1px solid #444444;
+		padding; 10px;
+		background-color: rgba(255, 255, 255, 05);
+	}
+
+	input {
+	
+
+	}
+
 
 </style>
 
@@ -52,6 +76,7 @@
                                 frm.method = "post";
                                 frm.submit();
                         }
+<<<<<<< HEAD
 
 			function popup_cosine(frm) {
                                 var url    ="/home/cosine_similarity";
@@ -75,48 +100,70 @@
 			</script>
 		{% endif %}
              
-
-			<div>
-			<div align="right" style="display:block;width:1000px;margin:0 auto;position:relative;">
+             
+<br></br>
+			<div class="text-center" style="display:block;width:1000px;margin:0 auto;position:relative;">
 				<form method="POST" action="/home/textInput">
 	
-					<span style=padding:20px;font-size:20px;">Enter the URL</span>
+					<span style=padding:50px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
 	
-					<input name="URL" type="text"style="width:800px;height:50px;font-size:30px;"><br>
+					<input name="URL" type="text"style="width:450px;height:40px;font-size:25px;">
 			
 					<button type="submit" name="process" value="Process"
-						 class="button">결과 출력 </button>
-					<input type="button" name="report" value="Report" class="button">
+						 class="btn btn-info">Result</button>
+					<input type="button" name="report" value="Reset" class="btn btn-info">
 				
-				</form>	<hr style=margin-bottom:30px;>
-			</div>
-
-			<div>
-				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-					<input type = "file" name = "file" />
-					<input type = "submit"/>
 				</form>
 			</div>
 
+			<div class="text-center">
+				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
+				<span style="padding:50px; font-size:25px;"><strong>Submit URL File&nbsp&nbsp ▶ </strong></span>
+				
+					<input class="text-center" type = "file" name = "file" />
+					<input class="btn btn-info"type = "submit" value="Submit">
+					<br>
+
 			</div>
-				<h3> List of URL </h3>
-				{% for i in range(numbers) %}
-                                	<table>
-                                        	{{ urlList[i] }} {{ countList[i] }} {{ time[i] }}
-                                       		<form name="form">
+			</form>
+
+<br></br>
+			</div>
+				<div style="width:100%; height:600px; overflow:scroll">
+                                	<table class="text-center">
+												<thead>
+													<tr class="text-center">
+													<th>Number</th><th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
+												</thead>
+											<div id="loading">
+											<img SRC="https://img1.daumcdn.net/thumb/R1920x0/?fname=http%3A%2F%2Fcfile1.uf.tistory.com%2Fimage%2F9950163C5AFE32810A7310">
+											</div>
+											<tbody>
+
+								{% for i in range(numbers) %}
+												<tr>
+													<td>{{ i+1 }}.</td>
+                                       <td>{{ urlList[i] }}</td>
+													<td>{{ countList[i] }}</td>
+													<td>{{ time[i] }}</td>
+                                       <td>	<form name="form">
                                                 	<input type="hidden" name="index" value='{{ i }}'>
-                                                	<input type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
-						</form>
+                                                	<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
+															</form>
+													</td>
 
-						<form name="form">
-                                                        <input type="hidden" name="index" value='{{ i }}'>
-                                                        <input type="button" value="Cosine Similarity" onclick="javascript:popup_cosine(this.form);">
-                                                </form>
-
-                                	</table>
+													
+													<td>	<form name="form">
+																<input type="hidden" name="index" value='{{ i }}'>
+																<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup2(this.form);">
+															</form>
+													</td>
+												</tr>
                 		{% endfor %}
+											</tbody>
+											</div>
+										</table>
 
-			
 		</div>
 	</body>
 </html>
