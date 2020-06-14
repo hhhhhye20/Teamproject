@@ -14,15 +14,6 @@
 		background-color: #e7dfd4;
 	}
 
-	.button {
-		border:2px solid black;
-		background: linear-gradient(to bottom, rgba(59,103,158,1) 0%,rgba(43,136,217,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%);
-		padding:10px 55px;
-		margin:10px;
-		font-size:20px;
-		border-radius:30px;
-	}
-
 	.table1 {
 		border-top:2px solid black; 
 		background:#D8D8D8;
@@ -65,9 +56,20 @@
 		background-color: rgba(255, 255, 255, 05);
 	}
 
+	input {
+	
+
+	}
+
+
 </style>
 
-   		 <script language="javascript">
+<script language="javascript">
+
+$(function() {
+		$("#loading").css("visibility","hidden");
+		});
+
 
                         function popup(frm) {
                                 var url    ="/home/word_analysis";
@@ -91,6 +93,7 @@
 								}
 
                 </script>
+					 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
 
 
 	</head>
@@ -116,12 +119,11 @@
 				</form>
 			</div>
 
-			<div style="position: relative; left: 430px; top: 20px;">
+			<div class="text-center">
 				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
 				<span style="padding:50px; font-size:25px;"><strong>Submit URL File&nbsp&nbsp ▶ </strong></span>
-				<span class="btn btn-info btn-file">Search
-					<input class="text-center" type = "file" name = "file" style="display:none;"/>
-					</span>
+				
+					<input class="text-center" type = "file" name = "file" />
 					<input class="btn btn-info"type = "submit" value="Submit">
 					<br>
 
@@ -130,36 +132,41 @@
 
 <br></br>
 			</div>
+				<div style="width:100%; height:600px; overflow:scroll">
                                 	<table class="text-center">
 												<thead>
 													<tr class="text-center">
-														<th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
+													<th>Number</th><th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
 												</thead>
-											<tbody>		
+											<div id="loading">
+											<img SRC="https://img1.daumcdn.net/thumb/R1920x0/?fname=http%3A%2F%2Fcfile1.uf.tistory.com%2Fimage%2F9950163C5AFE32810A7310">
+											</div>
+											<tbody>
 
 								{% for i in range(numbers) %}
-												<tr>	
+												<tr>
+													<td>{{ i+1 }}.</td>
                                        <td>{{ urlList[i] }}</td>
 													<td>{{ countList[i] }}</td>
 													<td>{{ time[i] }}</td>
                                        <td>	<form name="form">
                                                 	<input type="hidden" name="index" value='{{ i }}'>
-                                                	<input type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
+                                                	<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
 															</form>
 													</td>
 
 													
 													<td>	<form name="form">
 																<input type="hidden" name="index" value='{{ i }}'>
-																<input type="button" value="Similarity" onclick="javascript:popup2(this.form);">
+																<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup2(this.form);">
 															</form>
 													</td>
 												</tr>
                 		{% endfor %}
 											</tbody>
+											</div>
 										</table>
 
-			
 		</div>
 	</body>
 </html>
