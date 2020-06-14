@@ -66,12 +66,8 @@
 
 <script language="javascript">
 
-$(function() {
-		$("#loading").css("visibility","hidden");
-		});
 
-
-                        function popup(frm) {
+                        function popup_tfidf(frm) {
                                 var url    ="/home/word_analysis";
                                 var title  = "word_pop";
                                 var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0,left=20";
@@ -81,9 +77,9 @@ $(function() {
                                 frm.method = "post";
                                 frm.submit();
                         }
-								function popup2(frm) {
-											var url = "/home/cos_simil";
-											var title = "word_pop";
+								function popup_cosine(frm) {
+											var url = "/home/cosine_similarity";
+											var title = "sim_pop";
 											var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0, left=20";
 											window.open("",title,status);
 											frm.target = title;
@@ -93,15 +89,13 @@ $(function() {
 								}
 
                 </script>
-					 <script src="https://use.fontawesome.com/releases/v5.2.0/js/all.js"></script>
-
 
 	</head>
 	<body>
 		{% if ERROR %}
      			<script type="text/javascript">
-				alert('{{ ERROR }}');
-                	</script>
+					alert('{{ ERROR }}');
+           	</script>
 		{% endif %}
              
 <br></br>
