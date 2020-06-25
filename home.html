@@ -142,14 +142,14 @@
 													<td>{{ time[i] }}</td>
                                        <td>	<form name="form">
                                                 	<input type="hidden" name="index" value='{{ i }}'>
-                                                	<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup(this.form);">
+                                                	<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
 															</form>
 													</td>
 
 													
 													<td>	<form name="form">
 																<input type="hidden" name="index" value='{{ i }}'>
-																<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup2(this.form);">
+																<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup_cosine(this.form);">
 															</form>
 													</td>
 												</tr>
