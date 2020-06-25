@@ -32,6 +32,7 @@ countList = []
 time = []
 wordList = []
 simList = []
+simList2 = []
 numbers = 0
 
 #input text
@@ -85,7 +86,7 @@ def upload_file():
         tf_idf()
         cos_sim()
         for i in range(len(wordList)):
-            elastic_insert(wordList[i], simList[i], "temp", i)
+            elastic_insert(wordList[i], simList[i], simList2[i], i)
 
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
@@ -191,11 +192,20 @@ def cos_sim():
             for j in range(numbers):
                 result[urlList[j]]=cosine_sim[i][j]
 
-            keys = sorted(result.keys(), reverse=True, key=lambda x : result[x])[1:4]
+            items = sorted(result.items(), reverse=True, key=lambda x : x[1])[1:4]
+            
+            keys=[]
+            values=[]
+
+            for key, value in items:
+                keys.append(key)
+                values.append(round(100*float(value), 2))
+
 
             print(keys)
-
+            print(values)
             simList.append(keys)
+            simList2.append(values)
 
 
 
@@ -222,17 +232,17 @@ def print_similarity():
         else :
             ERROR = None
 
-        return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("simList", int(index)))
+        return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("simList", int(index)), top_url_percent=elastic_search("simPercent", int(index)))
 
 
 #elastic search
 #코사인 유사도 퍼센트 값 자리 주석처리
-def elastic_insert(wordList, simList, simPercent, number):
+def elastic_insert(wordList, simList, simList2, number):
 
 	e={
                 "wordList":wordList,
                 "simList":simList,
-                #"simPercent":simPercent
+                "simPercent":simList2
         }
 
 	res=es.index(index="analysis", doc_type='_doc',  id=number, body=e)
