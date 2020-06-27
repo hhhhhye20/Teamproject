@@ -3,12 +3,12 @@ SETUP_DIR="./project"
 
 WEB_DIR="$SETUP_DIR/"templates
 ETC_DIR="$SETUP_DIR/"static
-IMG_DIR="$IMG_DIR/"img
+IMG_DIR="$ETC_DIR/"img
 
-if [ ! -d "$SETUP_DIR" ]; then
-	mkdir -p $WEB_DIR
-	mkdir -p $IMG_DIR
-fi
+
+mkdir -p $WEB_DIR
+mkdir -p $IMG_DIR
+
 
 cp app.py $SETUP_DIR
 cp home.html $WEB_DIR
