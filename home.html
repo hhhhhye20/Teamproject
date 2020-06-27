@@ -138,23 +138,24 @@
 								{% for i in range(numbers) %}
 												<tr>
 													<td>{{ i+1 }}.</td>
-                                       <td>{{ urlList[i] }}</td>
+                                       									<td><a href="{{ urlList[i] }}" target="_blank">{{ urlList[i] }}</a></td>
 													<td>{{ countList[i] }}</td>
 													<td>{{ time[i] }}</td>
-                                       <td>	<form name="form">
-                                                	<input type="hidden" name="index" value='{{ i }}'>
-                                                	<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
-															</form>
+                                       									<td>	<form name="form">
+                                                									<input type="hidden" name="index" value='{{ i }}'>
+                                                									<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
+														</form>
 													</td>
 
 													
-													<td>	<form name="form">
-																<input type="hidden" name="index" value='{{ i }}'>
-																<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup_cosine(this.form);">
-															</form>
+													<td>	
+														<form name="form">
+															<input type="hidden" name="index" value='{{ i }}'>
+															<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup_cosine(this.form);">
+														</form>
 													</td>
 												</tr>
-                		{% endfor %}
+                						{% endfor %}
 											</tbody>
 											</div>
 										</table>
