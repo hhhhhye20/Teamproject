@@ -13,27 +13,6 @@
 	body{
 		background-color: #e7dfd4;
 	}
-
-	.table1 {
-		border-top:2px solid black; 
-		background:#D8D8D8;
-		padding:5px;
-		margin-top:5px;
-		margin-left:47px;
-		margin-right:47px;
-		padding-left:28px;
-		font-size:15px;
-	}
-
-	.table2 {
-		border-top:2px solid black;
-		background-color:#F7F8E0;
-                margin-top:5px;
-                margin-left:47px;
-                margin-right:47px;
-                padding-left:28px;
-                font-size:15px;
-	}
 	
 	table {
 		width: 80%;
@@ -107,44 +86,55 @@
 
 	</head>
 	<body>
+		<!-- 오류메세지 시작-->
 		{% if ERROR %}
 			<script type="text/javascript">
 				alert('{{ ERROR }}');
 			</script>
-		{% endif %}
-             
-             
-<br></br>
-			<div class="text-center" style="display:block;width:1000px;margin:0 auto;position:relative;">
-				<form method="POST" action="/home/textInput">
-	
-					<span style=padding:50px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
-	
-					<input name="URL" type="text"style="width:450px;height:40px;font-size:25px;">
-			
-					<button type="submit" name="process" value="Process" class="btn btn-info" onclick="$('#loading').show();">Result</button>
-				</form>
-
-				<form action="/">
-					<input type="button" name="report" value="Reset" class="btn btn-info">
-				</form>
-			</div>
-
-			<div class="text-center">
-				<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-				<span style="padding:50px; font-size:25px;"><strong>Submit URL File&nbsp&nbsp ▶ </strong></span>
+		{% endif %} <br></br>
+		<!-- 오류메세지 끝 -->
+		
+		<!-- 본문 시작 -->
+		<div style="display:block;width:1200px;margin:0 auto;position:relative;">
+			<!-- 1단 box 시작 -->
+			<div>
+				<div>
+					<div class="text-left">
+						<form method="POST" action="/home/textInput">
+		
+							<span style=padding:50px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
 				
-					<input class="text-center" type = "file" name = "file" />
-					<input class="btn btn-info"type = "submit" value="Submit" onclick="$('#loading').show();"/>
-					<br>
-
+							<input name="URL" type="text"style="width:450px;height:40px;font-size:25px;">
+			
+							<button type="submit" name="process" value="Process" class="btn btn-info" onclick="$('#loading').show();">Result</button>
+						</form>
+	
+						<form action="/">
+							<input type="button" name="report" value="Reset" class="btn btn-info">
+						</form>
+					</div>
+	
+					<div>
+						<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
+							
+							<span style="padding:50px; font-size:25px;"><strong>Submit URL File&nbsp&nbsp ▶ </strong></span>
+					
+							<input class="text-center" type = "file" name = "file" />
+							<input class="btn btn-info"type = "submit" value="Submit" onclick="$('#loading').show();"/><br>
+	
+						</form> <br></br>
+					</div>
+				</div>
 			</div>
-			</form> <br></br>
+			<!-- 1단  box 종료 -->
 
+			<!-- loading screen start-->
 			<div id="loading" style="display:none;" >
                                 <img src="{{ url_for('static', filename='img/loading_text.gif') }}" />
                         </div>
+			<!-- loading screen end -->
 
+			<!-- result box start -->
 			</div>
 				<div style="width:100%; height:600px; overflow:scroll">
                                 	<table class="text-center">
@@ -181,7 +171,11 @@
 											</tbody>
 											</div>
 										</table>
+					
+										</div>
+										<!-- result box end -->
 
 		</div>
+		<!-- 본문 종료-->
 	</body>
 </html>
