@@ -26,7 +26,7 @@
 		border-bottom: 1px solid #444444;
 		padding: 10px;
 		background-color: rgba(255, 255, 255, 0.7);
-
+		
 	}
 	
 	td {
@@ -151,9 +151,9 @@
 					<!-- filebox start -->
 					<div class="filebox">
 						<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-							<label for="ex_file" class="btn btn-info" style="margin-bottom: 0px">Upload</label>
-							<input type = "file" id="ex_file" />
-							<input class="btn btn-info" type = "submit" value="Submit" onclick="$('#loading').show();"/><br>
+							<label for="ex_file" class="btn btn-info" style="margin-bottom: 0px">File</label>
+							<input type = "file" name = "file" id="ex_file" />
+							<input class="btn btn-info" type = "submit" value="Upload" onclick="$('#loading').show();"/><br>
 	
 						</form>
 					</div>
@@ -180,9 +180,9 @@
 			</div>
 			<div style="width:100%; height:600px; overflow:scroll">
 				<div>
-					<table>
+					<table class="text-center">
 						<thead>
-							<tr class="text-center">
+							<tr>
 								<th>Number</th><th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
 						</thead>
 	
