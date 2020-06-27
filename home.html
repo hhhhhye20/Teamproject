@@ -35,6 +35,22 @@
 		background-color: rgba(255, 255, 255, 05);
 	}
 
+	.textbox {
+		float: left;
+		width: 60%;
+	}
+
+	.filebox {
+		float: left;
+		width: 30%;
+	}
+
+	.resetbox {
+		float: left;
+		width: 10%;
+	}
+
+
 	#loading {
 		width: 100%;
 		height: 100%;
@@ -98,8 +114,14 @@
 		<div style="display:block;width:1200px;margin:0 auto;position:relative;">
 			<!-- 1단 box 시작 -->
 			<div>
+				<!-- left box start -->
 				<div>
-					<div class="text-left">
+				</div>
+
+				
+				<div>
+					<!-- textbox start -->
+					<div class="textbox">
 						<form method="POST" action="/home/textInput">
 		
 							<span style=padding:50px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
@@ -108,22 +130,26 @@
 			
 							<button type="submit" name="process" value="Process" class="btn btn-info" onclick="$('#loading').show();">Result</button>
 						</form>
-	
-						<form action="/">
-							<input type="button" name="report" value="Reset" class="btn btn-info">
-						</form>
 					</div>
-	
+					<!-- textbox end -->
+					
+					<!-- filebox start -->
 					<div>
 						<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-							
-							<span style="padding:50px; font-size:25px;"><strong>Submit URL File&nbsp&nbsp ▶ </strong></span>
-					
 							<input class="text-center" type = "file" name = "file" />
 							<input class="btn btn-info"type = "submit" value="Submit" onclick="$('#loading').show();"/><br>
 	
 						</form> <br></br>
 					</div>
+					<!-- filebox end -->
+
+					<!-- resetbox start -->
+					<div>
+						<form action="/">
+                                                        <input type="button" name="report" value="Reset" class="btn btn-info">
+                                                </form>
+					</div>
+
 				</div>
 			</div>
 			<!-- 1단  box 종료 -->
