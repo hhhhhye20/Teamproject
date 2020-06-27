@@ -4,7 +4,7 @@
 	<head>
 		<title>HOME</title>
 		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-		<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 
@@ -41,13 +41,27 @@
 	}
 
 	.filebox {
+		padding-top: 3px;
 		float: left;
-		width: 30%;
+		width: 162px;
+	}
+	
+	.filebox input[type="file"] {
+		position: absolute;
+		width: 1px;
+		height: 1px;
+		padding: 0;
+		margin: -1px;
+		overflow: hidden;
+		clip:rect(0,0,0,0);
+		border: 0;
 	}
 
+
 	.resetbox {
+		padding-top: 3px;
 		float: left;
-		width: 10%;
+		width: 5%;
 	}
 
 
@@ -63,6 +77,7 @@
                 z-index: 99;
 		text-align: center;
 	}
+
 	#loading > img {
 		position: absolute;
                 top: 50%;
@@ -121,12 +136,12 @@
 				
 				<div>
 					<!-- textbox start -->
-					<div class="textbox">
+					<div class="textbox" >
 						<form method="POST" action="/home/textInput">
 		
-							<span style=padding:50px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
+							<span style=padding:10px;font-size:25px;font-familiy:Geogia;"><strong>Enter the URL&nbsp&nbsp ▶ </strong></span>
 				
-							<input name="URL" type="text"style="width:450px;height:40px;font-size:25px;">
+							<input name="URL" type="text"style="width:400px;height:38px;font-size:25px;">
 			
 							<button type="submit" name="process" value="Process" class="btn btn-info" onclick="$('#loading').show();">Result</button>
 						</form>
@@ -134,19 +149,20 @@
 					<!-- textbox end -->
 					
 					<!-- filebox start -->
-					<div>
+					<div class="filebox">
 						<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-							<input class="text-center" type = "file" name = "file" />
-							<input class="btn btn-info"type = "submit" value="Submit" onclick="$('#loading').show();"/><br>
+							<label for="ex_file" class="btn btn-info" style="margin-bottom: 0px">Upload</label>
+							<input type = "file" id="ex_file" />
+							<input class="btn btn-info" type = "submit" value="Submit" onclick="$('#loading').show();"/><br>
 	
-						</form> <br></br>
+						</form>
 					</div>
 					<!-- filebox end -->
 
 					<!-- resetbox start -->
-					<div>
+					<div class="resetbox">
 						<form action="/">
-                                                        <input type="button" name="report" value="Reset" class="btn btn-info">
+                                                        <input type="button" name="reset" value="Reset" class="btn btn-info">
                                                 </form>
 					</div>
 
@@ -162,45 +178,42 @@
 
 			<!-- result box start -->
 			</div>
-				<div style="width:100%; height:600px; overflow:scroll">
-                                	<table class="text-center">
-												<thead>
-													<tr class="text-center">
-													<th>Number</th><th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
-												</thead>
-											<div id="loading">
-											<img SRC="https://img1.daumcdn.net/thumb/R1920x0/?fname=http%3A%2F%2Fcfile1.uf.tistory.com%2Fimage%2F9950163C5AFE32810A7310">
-											</div>
-											<tbody>
+			<div style="width:100%; height:600px; overflow:scroll">
+				<div>
+					<table>
+						<thead>
+							<tr class="text-center">
+								<th>Number</th><th>URL</th><th>Total Number of Words</th><th>Processing Time</th><th>Top 10 Words</th><th>Top 3 Urls</th>
+						</thead>
+	
+				
+						<tbody>
+							{% for i in range(numbers) %}
+								<tr>
+									<td>{{ i+1 }}.</td>
+                                					<td><a href="{{ urlList[i] }}" target="_blank">{{ urlList[i] }}</a></td>
+									<td>{{ countList[i] }}</td>
+									<td>{{ time[i] }}</td>
+                                       					<td>	
+										<form name="form">
+                                                					<input type="hidden" name="index" value='{{ i }}'>
+                                                						<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
+										</form>
+									</td>
 
-								{% for i in range(numbers) %}
-												<tr>
-													<td>{{ i+1 }}.</td>
-                                       									<td><a href="{{ urlList[i] }}" target="_blank">{{ urlList[i] }}</a></td>
-													<td>{{ countList[i] }}</td>
-													<td>{{ time[i] }}</td>
-                                       									<td>	<form name="form">
-                                                									<input type="hidden" name="index" value='{{ i }}'>
-                                                									<input class="btn btn-info" style="margin-top:12px;"type="button" value="Word Analysis" onclick="javascript:popup_tfidf(this.form);">
-														</form>
-													</td>
-
-													
-													<td>	
-														<form name="form">
-															<input type="hidden" name="index" value='{{ i }}'>
-															<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup_cosine(this.form);">
-														</form>
-													</td>
-												</tr>
-                						{% endfor %}
-											</tbody>
-											</div>
-										</table>
-					
-										</div>
-										<!-- result box end -->
-
+									<td>	
+										<form name="form">
+											<input type="hidden" name="index" value='{{ i }}'>
+											<input class="btn btn-info"  style="margin-top:12px;" type="button" value="Similarity" onclick="javascript:popup_cosine(this.form);">
+										</form>
+									</td>
+								</tr>
+                					{% endfor %}
+						</tbody>
+					</table>
+				</div>	
+			</div>
+			<!-- result box end -->
 		</div>
 		<!-- 본문 종료-->
 	</body>
