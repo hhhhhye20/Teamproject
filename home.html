@@ -33,9 +33,24 @@
 		background-color: rgba(255, 255, 255, 05);
 	}
 
+	.titlebox {
+		width: 800px;
+		height: 150px;
+		margin-left: auto;
+                margin-right: auto;
+		background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+		background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+  color:transparent;
+  		-webkit-background-clip: text;
+  		background-clip: text;
+	
+		-webkit-text-fill-color: transparent;
+		font-size: 90px;
+	}
+
 	.resultbox {
 		width: 80%;
-		height: 800px;
+		height: 700px;
 		margin-left: auto;
                 margin-right: auto;
 		overflow: auto;
@@ -146,15 +161,16 @@
 			<!-- 1단 box 시작 -->
 			<div>
 				<!-- title box start -->
-				<div>
+				<div class="titlebox">
+					Opensource Project
 				</div>
 
 				<!-- file and text input box start-->	
 				<div>
 					<!-- resetbox start -->
 					<div class="resetbox">
-						<form action="/">
-							<input type="button" name="reset" value="Reset" class="btn btn-info">
+						<form action="/home/reset">
+							<input type="button" name="reset" value="Reset" class="btn btn-danger">
 						</form>
 					</div>
 					<!-- resetbox end -->
@@ -162,7 +178,7 @@
 					<!-- filebox start -->
                                         <div class="filebox">
 						<form action = "http://localhost:5000/home/fileUpload" method = "POST" enctype = "multipart/form-data">
-							<label for="ex_file" class="btn btn-info" style="margin-bottom: 0px">File</label>
+							<label for="ex_file" class="btn btn-success" style="margin-bottom: 0px">File</label>
 							<input type = "file" name = "file" id="ex_file" />
 							<input class="btn btn-info" type = "submit" value="Upload" onclick="$('#loading').show();"/><br>
 						</form>
@@ -178,7 +194,7 @@
 							<input name="URL" type="text"style="width:400px;height:38px;font-size:25px; padding-bottom: 9px;">
 				
 							
-							<button type="submit" name="process" value="Process" class="btn btn-info" onclick="$('#loading').show();">Result</button>
+							<button type="submit" name="process" value="Process" class="btn btn-secondary" onclick="$('#loading').show();">Result</button>
 						</form>
 					</div>
 					<!-- textbox end -->		
@@ -209,8 +225,8 @@
 							<tr>
 								<td>{{ i+1 }}.</td>
                                					<td><a href="{{ urlList[i] }}" target="_blank">{{ urlList[i] }}</a></td>
-								<td>{{ countList[i] }}</td>
-								<td>{{ time[i] }}</td>
+								<td>{{ countList[i] }}(개)</td>
+								<td>{{ time[i] }}(초)</td>
                                       				<td>	
 									<form name="form">
                                                					<input type="hidden" name="index" value='{{ i }}'>
