@@ -164,8 +164,8 @@ def tf_idf_and_cos_sim():
                 resultOfSimilarity[urlList[k]]=cosine_sim[i][k]
 
             items = sorted(resultOfSimilarity.items(), reverse=True, key=lambda x : x[1])[1:4]
-            words = sorted(resultOfWord.keys(), reverse=True, key=lambda x : resultOfWord[x])[:10]
-
+            topWords = sorted(resultOfWord.keys(), reverse=True, key=lambda x : resultOfWord[x])[0:10]
+            
             urls=[]
             percents=[]
 
@@ -173,8 +173,7 @@ def tf_idf_and_cos_sim():
                 urls.append(key)
                 percents.append(round(100*float(value), 2))
 
-
-            elastic_create(words, urls, percents, i)
+            elastic_create(topWords, urls, percents, i)
 
 
 @app.route('/home/word_analysis', methods=['POST'])
@@ -187,7 +186,7 @@ def print_analysis():
         else :
             ERROR = None
 
-        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=elastic_search("words", int(index)))
+        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=elastic_search("topWords", int(index)))
 
 
 @app.route('/home/cosine_similarity', methods=['POST'])
@@ -203,10 +202,10 @@ def print_similarity():
         return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("similarities", int(index)), top_url_percent=elastic_search("Percentages", int(index)))
 
 #elastic create
-def elastic_create(words, similarities, percentages, number):
+def elastic_create(topWords, similarities, percentages, number):
 
         e={
-                "words": words,
+                "topWords": topWords,
                 "similarities": similarities,
                 "Percentages": percentages
         }
