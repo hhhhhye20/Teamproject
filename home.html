@@ -7,35 +7,8 @@
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-		<link rel="stylesheet" href="{{ url_for('static',filename='css/style_home.css') }}">
-
-   		 <script language="javascript">
-
-                        function popup_tfidf(frm) {
-                                var url    ="/home/word_analysis";
-                                var title  = "word_pop";
-                                var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=800, top=0,left=20";
-                                window.open("", title,status);
-                                frm.target = title;
-                                frm.action = url;
-                                frm.method = "post";
-                                frm.submit();
-                        }
-
-			function popup_cosine(frm) {
-                                var url    ="/home/cosine_similarity";
-                                var title  = "sim_pop";
-                                var status = "toolbar=no,directories=no,scrollbars=no,resizable=no,status=no,menubar=no,width=600, height=400, top=0,left=20";
-                                window.open("", title,status);
-                                frm.target = title;
-                                frm.action = url;
-                                frm.method = "post";
-                                frm.submit();
-                        }
-
-                </script>
-
-
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style_home.css') }}">
+		<script src="{{ url_for('static', filename='js/popup.js') }}"></script>
 	</head>
 	<body style="display:block;width:1200px;margin:0 auto;position:relative;">
 		<!-- 오류메세지 시작-->
