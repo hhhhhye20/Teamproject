@@ -127,7 +127,7 @@ def input_items(url):
                 #processing time end
                 stop = timeit.default_timer()
 
-                time.append(stop - start)
+                time.append(round(stop - start, 2))
                
                 numbers += 1
 
