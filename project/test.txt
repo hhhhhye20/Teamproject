@@ -1,0 +1,11 @@
+http://hive.apache.org/index.html
+http://hc.apache.org/
+http://james.apache.org/
+http://axis.apache.org/
+https://couchdb.apache.org/
+http://metron.apache.org/
+http://tinkerpop.apache.org/
+http://unomi.apache.org/
+http://kibble.apache.org/
+https://pdfbox.apache.org/
+

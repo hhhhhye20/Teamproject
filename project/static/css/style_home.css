@@ -1,0 +1,105 @@
+	body{
+                background-color: #e7dfd4;
+        }
+
+        table {
+                width: 100%;
+                border-top: 1px solid #444444;
+                border-collapse: collapse;
+        }
+
+        th {
+                border-bottom: 1px solid #444444;
+                padding: 10px;
+                background-color: rgba(255, 255, 255, 0.7);
+          
+        }
+
+        td {
+                border-bottom: 1px solid #444444;
+                padding; 10px;
+                background-color: rgba(255, 255, 255, 05);
+        }
+
+        .titlebox {
+                width: 800px;
+                height: 150px;
+                margin-left: auto;
+                margin-right: auto;
+                background-image: -webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+                background-image: gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );
+  color:transparent;
+                -webkit-background-clip: text;
+                background-clip: text;
+
+                -webkit-text-fill-color: transparent;
+                font-size: 90px;
+        }
+
+        .resultbox {
+                width: 80%;
+                height: 700px;
+                margin-left: auto;
+                margin-right: auto;
+                overflow: auto;
+        }
+
+        .rightbox {
+                float: right;
+                width: 980px;
+        }
+
+        .leftbox {
+                float: left;
+                width: 220px;
+        }
+
+        .textbox {
+                float: right;
+                width: 720px;
+        }
+
+        .filebox {
+                padding-top: 4px;
+                float: right;
+                width: 137px;
+        }
+
+        .filebox input[type="file"] {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip:rect(0,0,0,0);
+                border: 0;
+        }
+	
+	.resetbox {
+                padding-top: 4px;
+                float: right;
+                width: 190px;
+        }
+
+
+        #loading {
+                width: 100%;
+                height: 100%;
+                top: 0;
+                left: 0;
+                position: fixed;
+                display: block;
+                opacity: 0.8;
+                background: white;
+                z-index: 99;
+                text-align: center;
+        }
+
+        #loading > img {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                z-index: 100;
+        }
+

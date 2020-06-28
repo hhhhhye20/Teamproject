@@ -1,0 +1,45 @@
+		body {
+                        background-color: #e7dfd4;
+                }
+
+                div.main{padding:50px; width:500px;  border=5px solid #000; position:absolute; top:0; right:0; bottom:0; left:0; margin:auto;}
+
+
+                table {
+                        border-top: 1px solid #444444;
+                        border-collapse: collapse;
+                        margin-left: auto;
+                        margin-right: auto;
+                        width: 80%;
+                }
+
+		thead {
+			font-weight: bold;
+		}
+		
+		th {
+			border-bottom: 1px solid #444444;
+        	        background-color: rgba(255, 255, 255, 0.7);
+	        }
+
+
+                tr {
+                        border-bottom: 1px solid #444444;
+                        background-color: rgba(255, 255, 255, 0.5);
+                }
+
+                h1 {
+                        text-align: center;
+                        color: #e83e8c;
+                }
+
+                .part1 {
+                        width: 30%;
+                        padding: 10px;
+                }
+
+                .part2 {
+                        width: 70%;
+                        padding: 10px;
+                }
+

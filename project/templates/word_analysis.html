@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>단어 분석</title>
+
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/style_word.css') }}">
+ 
+	</head>
+   	<body>
+                {% if ERROR %}
+                        <script type="text/javascript">
+                                alert("{{ ERROR }}");
+                                self.close();
+                        </script>
+                {% endif %}
+
+
+                <div class="main">
+                        <h1>TF-IDF Top 10 Word</h1>
+                        <br>
+
+
+                        <table style="text-align: center;">
+                                <thead>
+                                        <tr>
+                                                <th class="part1"> Ranking </th>
+                                                <th class="part2"> Word </th>
+					</tr>
+				</thead>
+				
+				<tbody>
+                                {% for i in range(10) %}
+                                        <tr>
+                                                <td class="part1">{{ i+1 }}</td>
+                                                <td class="part2">{{parsed_page[i]}}</td>                                           
+                                        </tr>
+                                {% endfor %}
+                                </tbody>
+                        </table>
+                </div>
+        </body>
+
+</html>
+
