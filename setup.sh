@@ -21,6 +21,7 @@ cp style_home.css $CSS_DIR
 cp cos.css $CSS_DIR
 cp style_word.css $CSS_DIR
 cp popup.js $JS_DIR
+cp Knuemblem.png $IMG_DIR
 
 python -c 'import subprocess
 import sys
