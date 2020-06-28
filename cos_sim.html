@@ -1,12 +1,11 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
 
 <html>
 	<head>
 		<meta charset="utf-8">
 		<title>코사인 유사도</title>
 		
-		<link rel="stylesheet" href="{{ url_for('static', filename='css/cos.css) }}">
-	</style>
- 
+		<link rel="stylesheet" href="{{ url_for('static', filename='css/cos.css') }}">
 	</head>
 
 
@@ -37,7 +36,7 @@
 				{% for i in range(3) %}
 					<tr>
 						<td class="part1">{{ i+1 }}</td>
-						<td class="part2">{{top_url[i]}}</td>
+						<td class="part2"><a href="{{ top_url[i] }}" target="_blank">{{top_url[i]}}</a></td>
 						<td class="part1">{{top_url_percent[i]}}%</td>
 					</tr>
 				{% endfor %}
