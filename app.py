@@ -137,14 +137,6 @@ def input_items(url):
 
                 time.append(stop - start)
                
-                
-
-                #elastic search
-                #elastic_insert(urlList[numbers], countList[numbers], time[numbers], numbers)
-                #print(elastic_search("url", numbers))
-                #print(elastic_search("word_num", numbers))
-                #print(elastic_search("time", numbers))
-
                 numbers += 1
 
                 return None
@@ -235,8 +227,7 @@ def print_similarity():
         return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("simList", int(index)), top_url_percent=elastic_search("simPercent", int(index)))
 
 
-#elastic search
-#코사인 유사도 퍼센트 값 자리 주석처리
+#elastic
 def elastic_insert(wordList, simList, simList2, number):
 
 	e={
@@ -253,18 +244,25 @@ def elastic_search(name, number):
 	dic=res['_source']
 	return(dic[name])
 
-#리셋함수 '/'에서 실행
+#리셋 버튼 모든 데이터를 지우고 처음 상태로 되돌아가는 버튼
+@app.route('/home/reset', methods=['POST'])
 def reset():
-    es.indices.delete(index='analysis', ignore=[400,404])
-    urlList.clear()
-    textList.clear()
-    countList.clear()
-    time.clear()
-    wordList.clear()
-    simList.clear()
-    global numbers 
-    numbers = 0
-       
+    global numbers
+    ERROR = None
+
+    if request.method == 'POST':
+        reset = request.form['reset']
+        if numbers < 1 :
+            ERROR = "리셋 할 데이터가 없습니다."
+        else :
+            ERROR = "리셋을 완료하였습니다."
+            urlList.clear()
+            textList.clear()
+            countList.clear()
+            time.clear()
+            numbers = 0
+
+    return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)       
 
 
 def make_index(index_name):
