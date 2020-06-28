@@ -17,6 +17,7 @@ cp word_analysis.html $WEB_DIR
 cp cos_sim.html $WEB_DIR
 cp loading_text.gif $IMG_DIR
 cp style_home.css $CSS_DIR
+cp cos.css $CSS_DIR
 
 python -c 'import subprocess
 import sys
