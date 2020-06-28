@@ -13,6 +13,16 @@
                         width: 80%;
                 }
 
+		thead {
+			font-weight: bold;
+		}
+		
+		th {
+			border-bottom: 1px solid #444444;
+        	        background-color: rgba(255, 255, 255, 0.7);
+	        }
+
+
                 tr {
                         border-bottom: 1px solid #444444;
                         background-color: rgba(255, 255, 255, 0.5);
