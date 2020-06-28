@@ -5,8 +5,7 @@ import os, re, requests, math, timeit
 from math import log
 from nltk import word_tokenize
 from bs4 import BeautifulSoup
-from flask import Flask, flash, request, redirect, url_for
-from flask import render_template
+from flask import Flask, flash, request, url_for, render_template
 from werkzeug.utils import secure_filename
 from elasticsearch import Elasticsearch
 from sklearn.feature_extraction.text import TfidfVectorizer
@@ -21,7 +20,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def home(ERROR=None, numbers=0):
-    reset()
+    
     make_index('analysis')
 
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
@@ -30,9 +29,6 @@ urlList = []
 textList = []
 countList = []
 time = []
-wordList = []
-simList = []
-simList2 = []
 numbers = 0
 
 #input text
@@ -46,9 +42,8 @@ def request_url():
 
     ERROR = input_items(url)
     
-    tf_idf()
-    cos_sim()
-    
+    tf_idf_and_cos_sim()
+
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers ) 
 
 def allowed_file(filename):
@@ -83,10 +78,7 @@ def upload_file():
 
                 ERROR = input_items(url)
 
-        tf_idf()
-        cos_sim()
-        for i in range(len(wordList)):
-            elastic_insert(wordList[i], simList[i], simList2[i], i)
+        tf_idf_and_cos_sim()
 
     return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)
 
@@ -150,55 +142,39 @@ def count_of_words(s):
 
 vectorizer = TfidfVectorizer() # 객체 선언
 
-def tf_idf():
-        vectorizer = TfidfVectorizer()
+def tf_idf_and_cos_sim():
         vectorizer.fit(textList)
         words = sorted(vectorizer.vocabulary_.keys())
         tf_idf = vectorizer.transform(textList).toarray()
 
-        wordList.clear()
-
-        for i in range(numbers):
-            
-            result ={}
-            
-            for j in range(len(words)):
-                result[words[j]]=tf_idf[i][j]
-                
-            keys = sorted(result.keys(), reverse=True, key=lambda x : result[x])[:10]
-                
-            print(keys)
-
-            wordList.append(keys)
-
-def cos_sim():
         cosine_matrix = vectorizer.fit_transform(textList) #벡터화
         cosine_sim = linear_kernel(cosine_matrix, cosine_matrix) #cosine 유사도
 
-        simList.clear()
+        make_index('analysis')
 
         for i in range(numbers):
 
-            result ={}
+            resultOfWord = {}
+            resultOfSimilarity = {}
 
-            for j in range(numbers):
-                result[urlList[j]]=cosine_sim[i][j]
+            for j in range(len(words)):
+                resultOfWord[words[j]]=tf_idf[i][j]
 
-            items = sorted(result.items(), reverse=True, key=lambda x : x[1])[1:4]
-            
-            keys=[]
-            values=[]
+            for k in range(numbers):
+                resultOfSimilarity[urlList[k]]=cosine_sim[i][k]
+
+            items = sorted(resultOfSimilarity.items(), reverse=True, key=lambda x : x[1])[1:4]
+            words = sorted(resultOfWord.keys(), reverse=True, key=lambda x : resultOfWord[x])[:10]
+
+            urls=[]
+            percents=[]
 
             for key, value in items:
-                keys.append(key)
-                values.append(round(100*float(value), 2))
+                urls.append(key)
+                percents.append(round(100*float(value), 2))
 
 
-            print(keys)
-            print(values)
-            simList.append(keys)
-            simList2.append(values)
-
+            elastic_create(words, urls, percents, i)
 
 
 @app.route('/home/word_analysis', methods=['POST'])
@@ -211,7 +187,7 @@ def print_analysis():
         else :
             ERROR = None
 
-        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=elastic_search("wordList", int(index)))
+        return render_template('word_analysis.html', ERROR=ERROR, parsed_page=elastic_search("words", int(index)))
 
 
 @app.route('/home/cosine_similarity', methods=['POST'])
@@ -224,20 +200,18 @@ def print_similarity():
         else :
             ERROR = None
 
-        return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("simList", int(index)), top_url_percent=elastic_search("simPercent", int(index)))
+        return render_template('cos_sim.html', ERROR=ERROR, top_url=elastic_search("similarities", int(index)), top_url_percent=elastic_search("Percentages", int(index)))
 
+#elastic create
+def elastic_create(words, similarities, percentages, number):
 
-#elastic
-def elastic_insert(wordList, simList, simList2, number):
-
-	e={
-                "wordList":wordList,
-                "simList":simList,
-                "simPercent":simList2
+        e={
+                "words": words,
+                "similarities": similarities,
+                "Percentages": percentages
         }
 
-	res=es.index(index="analysis", doc_type='_doc',  id=number, body=e)
-
+        res=es.index(index="analysis", doc_type='_doc',  id=number, body=e)
 
 def elastic_search(name, number):
 	res=es.get(index="analysis", doc_type="_doc", id=number)
@@ -256,13 +230,14 @@ def reset():
             ERROR = "리셋 할 데이터가 없습니다."
         else :
             ERROR = "리셋을 완료하였습니다."
+            make_index('analysis')
             urlList.clear()
             textList.clear()
             countList.clear()
             time.clear()
             numbers = 0
 
-    return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)       
+        return render_template('home.html', ERROR=ERROR, urlList=urlList, countList=countList, time=time, numbers=numbers)       
 
 
 def make_index(index_name):
